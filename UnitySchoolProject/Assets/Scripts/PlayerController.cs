@@ -67,11 +67,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay(Collision floor)
     {
-        if (floor.transform.tag == "Ground")
-        {
-            isFalling = false;
-        }
-        
+        isFalling = false;
     }
 }
 
