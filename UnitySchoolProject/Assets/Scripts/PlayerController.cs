@@ -28,6 +28,12 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(WaitForSceneLoad());
         }
+
+        if (other.gameObject.tag == "Object")
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene("GameOver");
+        }
     }
 
     private IEnumerator WaitForSceneLoad()
@@ -65,6 +71,7 @@ public class PlayerController : MonoBehaviour
         {
             isFalling = false;
         }
+        
     }
 }
 
