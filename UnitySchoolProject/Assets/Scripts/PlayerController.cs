@@ -1,35 +1,70 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    CharacterController characterController;
+    public Rigidbody rb;
+    public float forwardForce = 50f;
+    public float sidewaysForce = 1000f;
+    public float maxSpeed = 10f;
+    public float topSpeed = 10f;
+    private bool isFalling = false;
 
-    public float speed = 6.0f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
-
-    private Vector3 moveDirection = Vector3.zero;
-
-    void Start()
+    void FixedUpdate()
     {
-        characterController = GetComponent<CharacterController>();
+        rb.AddForce(0, 0, forwardForce * Time.deltaTime);
+
+        if (rb.velocity.magnitude > topSpeed)
+            rb.velocity = rb.velocity.normalized * topSpeed;
+
+        Controls();
     }
 
-    void Update()
+    void OnTriggerEnter(Collider other)
     {
-        if (characterController.isGrounded)
+        if (other.gameObject.tag == "Water")
         {
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-            moveDirection *= speed;
-
-            if (Input.GetButton("Jump"))
-            {
-                moveDirection.y = jumpSpeed;
-            }
+            StartCoroutine(WaitForSceneLoad());
         }
-        moveDirection.y -= gravity * Time.deltaTime;
-        characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    private IEnumerator WaitForSceneLoad()
+    {
+        yield return new WaitForSeconds(0.3f);
+        Destroy(gameObject);
+        SceneManager.LoadScene("GameOver");
+    }
+
+    void Controls()
+    {
+        if (Input.GetKey("a"))
+        {
+            rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0);
+        }
+
+        if (Input.GetKey("d"))
+        {
+            rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0);
+        }
+
+        if (Input.GetKey(KeyCode.Space) && isFalling == false)
+        {
+            Vector3 vertVelocity = rb.velocity;
+            vertVelocity.y = 5f;
+            rb.velocity = vertVelocity;
+
+            isFalling = true;
+        }
+    }
+
+    void OnCollisionStay(Collision floor)
+    {
+        if (floor.transform.tag == "Ground")
+        {
+            isFalling = false;
+        }
     }
 }
+
