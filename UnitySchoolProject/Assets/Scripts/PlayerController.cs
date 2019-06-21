@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
     public float forwardForce = 50f;
     public float sidewaysForce = 1000f;
-    public float maxSpeed = 10f;
     public float topSpeed = 10f;
     private bool isFalling = false;
 
