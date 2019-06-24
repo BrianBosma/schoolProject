@@ -25,13 +25,22 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "Water")
         {
+            Debug.Log("You hit the water.");
             StartCoroutine(WaitForSceneLoad());
         }
 
         if (other.gameObject.tag == "Object")
         {
+            Debug.Log("You hit an obstacle/object.");
             Destroy(gameObject);
             SceneManager.LoadScene("GameOver");
+        }
+
+        if(other.gameObject.tag == "Finish")
+        {
+            Debug.Log("You finished!");
+            Destroy(gameObject);
+            SceneManager.LoadScene("Finish");
         }
     }
 
